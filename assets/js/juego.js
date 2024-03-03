@@ -99,6 +99,16 @@ const nuevaApuesta = (saldoDinero) => {
     }
 };
 
+const mostrarMensaje = (icono, titulo, mensaje) => {
+    Swal.fire({
+        icon: icono,
+        title: titulo,
+        text: mensaje,
+        toast: true,
+        position: 'bottom-end'
+    })
+};
+
 /* Agrupa las cartas seleccionadas por el Jugador y calcula su puntaje respectivo */
 const turnoJugador = (intento) => {
     const carta           = pedirCarta();
@@ -156,9 +166,9 @@ const onRealizarApuesta = () => {
         deshabilitarElementos(opcionesApuesta);
         habilitarElementos(opcionesJuego);
     } else if (totalApuesta === 0) {
-        alert('Para apostar primero debes comprar fichas.');
+        mostrarMensaje('info', '¡Uups...!', 'Para apostar primero debes comprar fichas.');
     } else {
-        alert('No tienes suficiente dinero para comprar fichas.');
+        mostrarMensaje('info', '¡Uups...!', 'No tienes suficiente dinero para comprar fichas.');
     }
 };
 
@@ -177,22 +187,20 @@ const onDetenerPartida = () => {
     while (puntajeComputadora <= 16) {
         turnoComputadora(0);
     }
-    setTimeout(() => {
-        if (puntajeJugador <= 21 && (puntajeJugador > puntajeComputadora || puntajeComputadora > 21)) {
-            alert('Ganaste la partida.');
-            dineroInicial = dineroInicial + (totalApuesta * 2);
-        } else if (puntajeComputadora === puntajeJugador) {
-            alert('Hay un empate en la partida.');
-            dineroInicial = dineroInicial + totalApuesta;
-        } else {
-            alert('Perdiste la partida.');
-        }
-    }, 300);
+    if (puntajeJugador <= 21 && (puntajeJugador > puntajeComputadora || puntajeComputadora > 21)) {
+        mostrarMensaje('success', '¡Felicidades!', 'Ganaste la partida.');
+        dineroInicial = dineroInicial + (totalApuesta * 2);
+    } else if (puntajeComputadora === puntajeJugador) {
+        mostrarMensaje('info', '¡Uups...!', 'No hay un ganador en la partida.');
+        dineroInicial = dineroInicial + totalApuesta;
+    } else {
+        mostrarMensaje('error', '¡Lo siento!', 'Perdiste la partida.');
+    }
     setTimeout(() => {
         onReiniciarApuesta();
         habilitarElementos(fichasApuesta);
         nuevaApuesta(dineroInicial);
-    }, 3000);
+    }, 5000);
 };
 
 const mostrarTotalFichasApuesta = (totalFicha, valorFicha, tagTotalFicha) => {
