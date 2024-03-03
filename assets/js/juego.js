@@ -93,14 +93,38 @@ const nuevaApuesta = (saldoDinero) => {
     if (cartasComputadora.length > 0) { cartasComputadora.forEach((carta) => carta.remove()); }
 };
 
+const mostrarMensajeFinRonda = () => {
+    if (dineroInicial === 0) {
+        Swal.fire({
+            icon: 'error',
+            title: '¡Fin de la ronda!',
+            text: 'Te has quedado sin dinero.',
+            toast: true,
+            position: 'bottom-end',
+            confirmButtonText: 'Nueva ronda'
+        }).then((resultado) => {
+            if (resultado.isConfirmed) { onNuevaPartida(); }
+        });
+    }
+};
+
 const mostrarMensaje = (icono, titulo, mensaje) => {
     Swal.fire({
         icon: icono,
         title: titulo,
         text: mensaje,
         toast: true,
-        position: 'bottom-end'
-    })
+        position: 'bottom-end',
+        confirmButtonText: 'Ok'
+    }).then((resultado) => {
+        if (resultado.isConfirmed && (icono.includes('success') || icono.includes('warning') || 
+            icono.includes('error'))) {
+            onReiniciarApuesta();
+            habilitarElementos(fichasApuesta);
+            nuevaApuesta(dineroInicial);
+            mostrarMensajeFinRonda();
+        }
+    });
 };
 
 /* Agrupa las cartas seleccionadas por el Jugador y calcula su puntaje respectivo */
@@ -134,6 +158,7 @@ const deshabilitarElementos = (elementos) => {
     elementos.forEach((elemento) => elemento.classList.add('disabled'));
 }
 
+/* Establece los valores iniciales para una apuesta */
 const onReiniciarApuesta = () => {
     totalFicha10  = 0;
     totalFicha20  = 0;
@@ -178,18 +203,14 @@ const onDetenerPartida = () => {
     
     if (puntajeJugador <= 21 && (puntajeJugador > puntajeComputadora || puntajeComputadora > 21)) {
         mostrarMensaje('success', '¡Felicidades!', 'Ganaste la partida.');
-        dineroInicial = dineroInicial + (totalApuesta * 2);
+        dineroInicial = (cartas.length === 2 && puntajeJugador === 21)?
+                        dineroInicial + (totalApuesta * 2.5): dineroInicial + (totalApuesta * 2)
     } else if (puntajeComputadora === puntajeJugador) {
-        mostrarMensaje('info', '¡Uups...!', 'No hay un ganador en la partida.');
+        mostrarMensaje('warning', '¡Uups...!', 'No hay un ganador en la partida.');
         dineroInicial = dineroInicial + totalApuesta;
     } else {
         mostrarMensaje('error', '¡Lo siento!', 'Perdiste la partida.');
     }
-    setTimeout(() => {
-        onReiniciarApuesta();
-        habilitarElementos(fichasApuesta);
-        nuevaApuesta(dineroInicial);
-    }, 3000);
 };
 
 const mostrarTotalFichasApuesta = (totalFicha, valorFicha, tagTotalFicha) => {
@@ -198,6 +219,7 @@ const mostrarTotalFichasApuesta = (totalFicha, valorFicha, tagTotalFicha) => {
         tagTotalFicha.innerText = totalFicha;
         badges[4].innerText     = totalApuesta;
     }
+
     if (opcionesApuesta[0].classList.contains('disabled') && 
         opcionesApuesta[0].classList.contains('disabled')) {
         habilitarElementos(opcionesApuesta);
