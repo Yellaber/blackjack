@@ -53,9 +53,7 @@ const crearMazo = () => {
 
 /* Selecciona la última carta del mazo */
 const pedirCarta = () => {
-    if (mazo.length === 0) {
-        throw 'Lo siento, no hay mas cartas en el mazo.';
-    }
+    if (mazo.length === 0) { throw 'Lo siento, no hay mas cartas en el mazo.'; }
     const carta = mazo.pop();
     return carta;
 };
@@ -70,7 +68,7 @@ const pedirCarta = () => {
 const valorCarta = (intento, carta, puntaje) => {
     const valor      = carta.substring(0, carta.length - 1);
     let   valorCarta = (!isNaN(valor)) ? valor * 1 : (valor === 'A') ? 1 : 10;
-
+    
     if ((intento == 2 && puntaje == 1) && valorCarta == 10) {
         valorCarta = 20;
     } else if ((intento == 2 && puntaje == 10) && valorCarta == 1) {
@@ -91,12 +89,8 @@ const nuevaApuesta = (saldoDinero) => {
     dineroInicial           = saldoDinero;
     badgeDinero.innerText   = saldoDinero;
 
-    if (cartasJugador.length > 0) {
-        cartasJugador.forEach((carta) => carta.remove());
-    }
-    if (cartasComputadora.length > 0) {
-        cartasComputadora.forEach((carta) => carta.remove());
-    }
+    if (cartasJugador.length > 0) { cartasJugador.forEach((carta) => carta.remove()); }
+    if (cartasComputadora.length > 0) { cartasComputadora.forEach((carta) => carta.remove()); }
 };
 
 const mostrarMensaje = (icono, titulo, mensaje) => {
@@ -111,16 +105,14 @@ const mostrarMensaje = (icono, titulo, mensaje) => {
 
 /* Agrupa las cartas seleccionadas por el Jugador y calcula su puntaje respectivo */
 const turnoJugador = (intento) => {
-    const carta           = pedirCarta();
-    puntajeJugador        = puntajeJugador + valorCarta(intento, carta, puntajeJugador);
-    const imagenCarta     = document.createElement('img');
-    imagenCarta.src       = `./assets/images/${carta}.png`;
+    const carta       = pedirCarta();
+    puntajeJugador    = puntajeJugador + valorCarta(intento, carta, puntajeJugador);
+    const imagenCarta = document.createElement('img');
+    imagenCarta.src   = `./assets/images/${carta}.png`;
     imagenCarta.classList.add('shadow');
     jugadorCarta.append(imagenCarta);
 
-    if (puntajeJugador >= 21) {
-        onDetenerPartida();
-    }
+    if (puntajeJugador >= 21) { onDetenerPartida(); }
 };
 
 /* Agrupa las cartas seleccionadas por la Computadora y calcula su puntaje respectivo */
@@ -128,11 +120,8 @@ const turnoComputadora = (intento) => {
     ultimaCarta        = pedirCarta();
     puntajeComputadora = puntajeComputadora + valorCarta(intento, ultimaCarta, puntajeComputadora);
     const imagenCarta  = document.createElement('img');
-    if (intento === 2) {
-        imagenCarta.src = './assets/images/blue-back.png';
-    } else {
-        imagenCarta.src = `./assets/images/${ultimaCarta}.png`;
-    }
+    (intento === 2)? imagenCarta.src = './assets/images/blue-back.png': 
+                     imagenCarta.src = `./assets/images/${ultimaCarta}.png`
     imagenCarta.classList.add('shadow');
     computadoraCarta.append(imagenCarta);
 };
@@ -184,9 +173,9 @@ const onDetenerPartida = () => {
     const cartas  = document.querySelectorAll('#computadora-cartas img');
     cartas[1].src = `./assets/images/${ultimaCarta}.png`;
     cartas[1].classList.add('shadow');
-    while (puntajeComputadora <= 16) {
-        turnoComputadora(0);
-    }
+
+    while (puntajeComputadora <= 16) { turnoComputadora(0); }
+    
     if (puntajeJugador <= 21 && (puntajeJugador > puntajeComputadora || puntajeComputadora > 21)) {
         mostrarMensaje('success', '¡Felicidades!', 'Ganaste la partida.');
         dineroInicial = dineroInicial + (totalApuesta * 2);
@@ -200,7 +189,7 @@ const onDetenerPartida = () => {
         onReiniciarApuesta();
         habilitarElementos(fichasApuesta);
         nuevaApuesta(dineroInicial);
-    }, 5000);
+    }, 3000);
 };
 
 const mostrarTotalFichasApuesta = (totalFicha, valorFicha, tagTotalFicha) => {
