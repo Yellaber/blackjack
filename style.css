@@ -16,7 +16,7 @@ main #jugador-cartas img, main #computadora-cartas img {
 }
 
 .container-fluid {
-    background: url('../images/bkg-mesa-poker.jpg');
+    background: url('./assets/images/bkg-mesa-poker.jpg');
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
